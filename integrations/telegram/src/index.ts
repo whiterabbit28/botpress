@@ -78,6 +78,7 @@ const integration = new Integration({
         dropdown: async ({ ctx, conversation, ack, payload }) => {
           const client = new Telegraf(ctx.configuration.botToken)
           const buttons = payload.options.map((choice) => Markup.button.callback(choice.label, choice.value))
+          console.log(Markup.keyboard(buttons).oneTime())
           const message = await client.telegram.sendMessage(
             getChat(conversation),
             payload.text,
@@ -94,6 +95,19 @@ const integration = new Integration({
             Markup.keyboard(buttons).oneTime()
           )
           await ackMessage(message, ack)
+        },
+        raw: async ({ ctx, conversation, ack, payload }) => {
+          const client = new Telegraf(ctx.configuration.botToken)
+
+          console.info(payload)
+          for (const item of payload.payloads) {
+            console.info(item)
+            if (item.type === 'message') {
+              const message = await client.telegram.sendMessage(getChat(conversation), item.text, item as any)
+              await ackMessage(message, ack)
+            }
+            console.log(payload)
+          }
         },
       },
     },

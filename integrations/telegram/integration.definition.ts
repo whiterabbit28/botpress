@@ -1,5 +1,6 @@
-import { IntegrationDefinition, messages } from '@botpress/sdk'
+import { IntegrationDefinition } from '@botpress/sdk'
 import { sentry as sentryHelpers } from '@botpress/sdk-addons'
+import { channels } from 'src/definitions'
 import { z } from 'zod'
 
 export default new IntegrationDefinition({
@@ -14,16 +15,7 @@ export default new IntegrationDefinition({
       botToken: z.string(),
     }),
   },
-  channels: {
-    channel: {
-      messages: messages.defaults,
-      message: { tags: { id: {} } },
-      conversation: {
-        tags: { id: {} },
-        creation: { enabled: true, requiredTags: ['id'] },
-      },
-    },
-  },
+  channels,
   actions: {},
   events: {},
   secrets: [...sentryHelpers.COMMON_SECRET_NAMES],
