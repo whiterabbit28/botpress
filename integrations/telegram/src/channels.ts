@@ -77,13 +77,14 @@ const defaultMessages: IntegrationProps['channels']['channel']['messages'] = {
   raw: async ({ ctx, conversation, ack, payload }) => {
     const client = new Telegraf(ctx.configuration.botToken)
 
-    console.info(payload)
+    console.info('raw received', JSON.stringify(payload, undefined, 2))
 
     for (const item of payload.payloads) {
-      console.info(item)
       const extra = item as any
 
       const fnName = `send${item.send_type.charAt(0).toUpperCase() + item.send_type.slice(1)}`
+
+      console.log('fnName', fnName)
       const message = await client.telegram.callApi(fnName, { chat_id: getChat(conversation), ...extra })
       console.log('message', message)
       await ackMessage(message, ack)

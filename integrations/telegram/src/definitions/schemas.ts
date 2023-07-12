@@ -19,11 +19,18 @@ const keyboardButtonSchema = z.object({
     .describe(
       'Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed'
     ),
+  callback_data: z
+    .string()
+    .optional()
+    .describe('Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes'),
+  hide: z.boolean().optional().describe('Optional. Specify True, to hide the button'),
   request_contact: z.boolean().optional().describe("If True, the user's phone number will be requested"),
   request_location: z.boolean().optional().describe("If True, the user's current location will be requested"),
-  request_poll: keyboardButtonPollTypeSchema.describe(
-    'If specified, the user will be asked to create a poll and send it to the bot when the button is pressed.'
-  ),
+  request_poll: keyboardButtonPollTypeSchema
+    .optional()
+    .describe(
+      'If specified, the user will be asked to create a poll and send it to the bot when the button is pressed.'
+    ),
 })
 
 const loginUrlSchema = z
