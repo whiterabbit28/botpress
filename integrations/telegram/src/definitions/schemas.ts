@@ -1,3 +1,4 @@
+import { MessageSchemas } from '.bdk'
 import { z } from 'zod'
 
 const keyboardButtonPollTypeSchema = z
@@ -151,6 +152,9 @@ const sendPhotoSchema = z
     caption: z.string().max(1024).optional().describe('Photo caption (0-1024 characters)'),
     reply_markup: replyMarkupSchema,
   })
+  .describe(
+    'Use this method to send a photo or an image to a user. Prefer this one if an URl is provided to an image file'
+  )
   .strict()
 
 const sendAudioSchema = z
@@ -220,17 +224,19 @@ const sendVoiceSchema = z.object({
   reply_markup: replyMarkupSchema,
 })
 
-export const payloadSchema = z.array(
-  z.discriminatedUnion('send_type', [
-    sendMessageSchema,
-    sendPhotoSchema,
-    sendAudioSchema,
-    sendDocumentSchema,
-    sendVideoSchema,
-    sendLocationSchema,
-    sendVenueSchema,
-    sendContactSchema,
-    sendAnimationSchema,
-    sendVoiceSchema,
-  ])
-)
+export const payloadSchema = z
+  .array(
+    z.discriminatedUnion('send_type', [
+      sendMessageSchema,
+      sendPhotoSchema,
+      sendAudioSchema,
+      sendDocumentSchema,
+      sendVideoSchema,
+      sendLocationSchema,
+      sendVenueSchema,
+      sendContactSchema,
+      sendAnimationSchema,
+      sendVoiceSchema,
+    ])
+  )
+  .describe('Use the send_type literal exactly as defined. When in doubt use "message"')
