@@ -213,103 +213,6 @@ const sendVoiceSchema = z.object({
   reply_markup: replyMarkupSchema,
 })
 
-const sendVideoNoteSchema = z.object({
-  function_name: z.literal('sendVideoNote'),
-  video_note: z.string().describe('Video note to send (file id, url, file path)'),
-  length: z.number().optional().describe('Video width and height'),
-  duration: z.number().optional().describe('Duration of the video in seconds'),
-  thumb: z.string().optional().describe('Thumbnail of the video note'),
-  reply_markup: replyMarkupSchema,
-})
-
-const InputMediaPhotoSchema = z.object({
-  type: z.literal('photo'),
-  media: z.string().describe('File to send. Pass a file_id to send a file that exists on the Telegram servers'),
-  caption: z.string().optional().describe('Caption of the photo to be sent, 0-1024 characters after entities parsing'),
-  parse_mode: z.enum(['Markdown', 'MarkdownV2', 'HTML']).optional(),
-})
-
-const InputMediaVideoSchema = z.object({
-  type: z.literal('video'),
-  media: z.string().describe('File to send. Pass a file_id to send a file that exists on the Telegram servers'),
-  thumb: z.string().optional().describe('Thumbnail of the video sent'),
-  caption: z.string().optional().describe('Caption of the video to be sent, 0-1024 characters after entities parsing'),
-  parse_mode: z.enum(['Markdown', 'MarkdownV2', 'HTML']).optional(),
-  width: z.number().optional(),
-  height: z.number().optional(),
-  duration: z.number().optional(),
-  supports_streaming: z.boolean().optional(),
-})
-
-const InputMediaSchema = z.union([InputMediaPhotoSchema, InputMediaVideoSchema])
-
-const sendMediaGroupSchema = z.object({
-  function_name: z.literal('sendMediaGroup'),
-  media: z.array(InputMediaSchema).describe('Array of InputMediaPhoto and InputMediaVideo to send'),
-  reply_markup: replyMarkupSchema,
-})
-
-const sendPollSchema = z.object({
-  function_name: z.literal('sendPoll'),
-  question: z.string().describe('Poll question, 1-300 characters'),
-  options: z.array(z.string()).describe('List of answer options, 2-10 strings 1-100 characters each'),
-  is_anonymous: z.boolean().optional().describe('True, if the poll needs to be anonymous'),
-  type: z.enum(['regular', 'quiz']).optional().describe('Type of the poll'),
-  allows_multiple_answers: z.boolean().optional().describe('True, if the poll allows multiple answers'),
-  correct_option_id: z.number().optional().describe('0-based identifier of the correct answer option'),
-  reply_markup: replyMarkupSchema,
-})
-
-const sendDiceSchema = z.object({
-  function_name: z.literal('sendDice'),
-  emoji: z.string().optional().describe('Emoji on which the dice throw animation is based'),
-  reply_markup: replyMarkupSchema,
-})
-
-const sendChatActionSchema = z
-  .object({
-    function_name: z.literal('sendChatAction'),
-    action: z.enum([
-      'typing',
-      'upload_photo',
-      'record_video',
-      'upload_video',
-      'record_audio',
-      'upload_audio',
-      'upload_document',
-      'find_location',
-      'record_video_note',
-      'upload_video_note',
-    ]),
-    message_thread_id: z.number().optional(),
-  })
-  .describe(
-    'The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status).'
-  )
-
-const sendStickerSchema = z.object({
-  function_name: z.literal('sendSticker'),
-  sticker: z.string().describe('Sticker to send (file id, url, file path)'),
-  reply_markup: replyMarkupSchema,
-})
-
-const LabeledPriceSchema = z.object({
-  label: z.string(),
-  amount: z.number(),
-})
-
-const sendInvoiceSchema = z.object({
-  function_name: z.literal('sendInvoice'),
-  title: z.string().describe('Product name'),
-  description: z.string().describe('Product description'),
-  payload: z.string().describe('Unique deep-linking parameter that can be used to generate this invoice'),
-  provider_token: z.string().describe('Payments provider token obtained via Botfather'),
-  start_parameter: z.string().describe('Unique deep-linking parameter that can be used to generate this invoice'),
-  currency: z.string().describe('Three-letter ISO 4217 currency code'),
-  prices: z.array(LabeledPriceSchema).describe('Breakdown of prices'),
-  reply_markup: replyMarkupSchema,
-})
-
 export const payloadSchema = z.array(
   z.discriminatedUnion('function_name', [
     sendMessageSchema,
@@ -322,12 +225,5 @@ export const payloadSchema = z.array(
     sendContactSchema,
     sendAnimationSchema,
     sendVoiceSchema,
-    sendVideoNoteSchema,
-    sendMediaGroupSchema,
-    sendPollSchema,
-    sendDiceSchema,
-    sendChatActionSchema,
-    sendStickerSchema,
-    sendInvoiceSchema,
   ])
 )
