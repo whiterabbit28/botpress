@@ -83,7 +83,8 @@ const defaultMessages: IntegrationProps['channels']['channel']['messages'] = {
       console.info(item)
       const extra = item as any
 
-      const message = await client.telegram.callApi(item.function_name, { chat_id: getChat(conversation), ...extra })
+      const fnName = `send${item.send_type.charAt(0).toUpperCase() + item.send_type.slice(1)}`
+      const message = await client.telegram.callApi(fnName, { chat_id: getChat(conversation), ...extra })
       console.log('message', message)
       await ackMessage(message, ack)
 

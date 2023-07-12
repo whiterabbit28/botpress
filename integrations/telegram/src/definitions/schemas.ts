@@ -122,7 +122,7 @@ const replyMarkupSchema = z
 
 const sendMessageSchema = z
   .object({
-    function_name: z.literal('sendMessage'),
+    send_type: z.literal('message'),
     text: z.string().max(4096).describe('Text of the message to be sent'),
     parse_mode: z
       .enum(['Markdown', 'MarkdownV2', 'HTML'])
@@ -136,7 +136,7 @@ const sendMessageSchema = z
 
 const sendPhotoSchema = z
   .object({
-    function_name: z.literal('sendPhoto'),
+    send_type: z.literal('photo'),
     photo: z.union([
       z.string().describe('Photo to send (file id, url, file path)'),
       z.object({ url: z.string(), filename: z.string() }),
@@ -148,7 +148,7 @@ const sendPhotoSchema = z
 
 const sendAudioSchema = z
   .object({
-    function_name: z.literal('sendAudio'),
+    send_type: z.literal('audio'),
     audio: z.string().describe('Audio to send (file id, url, file path)'),
     caption: z.string().max(1024).optional().describe('Audio caption (0-1024 characters)'),
     reply_markup: replyMarkupSchema,
@@ -156,21 +156,21 @@ const sendAudioSchema = z
   .strict()
 
 const sendDocumentSchema = z.object({
-  function_name: z.literal('sendDocument'),
+  send_type: z.literal('document'),
   document: z.string().describe('Document to send (file id, url, file path)'),
   caption: z.string().max(1024).optional().describe('Document caption (0-1024 characters)'),
   reply_markup: replyMarkupSchema,
 })
 
 const sendVideoSchema = z.object({
-  function_name: z.literal('sendVideo'),
+  send_type: z.literal('video'),
   video: z.string().describe('Video to send (file id, url, file path)'),
   caption: z.string().max(1024).optional().describe('Video caption (0-1024 characters)'),
   reply_markup: replyMarkupSchema,
 })
 
 const sendLocationSchema = z.object({
-  function_name: z.literal('sendLocation'),
+  send_type: z.literal('location'),
   latitude: z.number().min(-90).max(90).describe('Latitude of the location'),
   longitude: z.number().min(-180).max(180).describe('Longitude of the location'),
   reply_markup: replyMarkupSchema,
@@ -178,7 +178,7 @@ const sendLocationSchema = z.object({
 
 const sendVenueSchema = sendLocationSchema
   .extend({
-    function_name: z.literal('sendVenue'),
+    send_type: z.literal('venue'),
     title: z.string().describe('Name of the venue'),
     address: z.string().describe('Address of the venue'),
     foursquare_id: z.string().optional().describe('Optional Foursquare ID of the venue'),
@@ -187,7 +187,7 @@ const sendVenueSchema = sendLocationSchema
   .describe('Venue to send')
 
 const sendContactSchema = z.object({
-  function_name: z.literal('sendContact'),
+  send_type: z.literal('contact'),
   phone_number: z.string(),
   first_name: z.string(),
   last_name: z.string(),
@@ -195,7 +195,7 @@ const sendContactSchema = z.object({
 })
 
 const sendAnimationSchema = z.object({
-  function_name: z.literal('sendAnimation'),
+  send_type: z.literal('animation'),
   animation: z.string().describe('Animation to send (file id, url, file path)'),
   duration: z.number().optional().describe('Duration of the animation in seconds'),
   width: z.number().optional().describe('Animation width'),
@@ -206,7 +206,7 @@ const sendAnimationSchema = z.object({
 })
 
 const sendVoiceSchema = z.object({
-  function_name: z.literal('sendVoice'),
+  send_type: z.literal('voice'),
   voice: z.string().describe('Voice to send (file id, url, file path)'),
   caption: z.string().max(1024).optional().describe('Voice message caption (0-1024 characters)'),
   duration: z.number().optional().describe('Duration of the voice message in seconds'),
@@ -214,7 +214,7 @@ const sendVoiceSchema = z.object({
 })
 
 export const payloadSchema = z.array(
-  z.discriminatedUnion('function_name', [
+  z.discriminatedUnion('send_type', [
     sendMessageSchema,
     sendPhotoSchema,
     sendAudioSchema,
