@@ -120,34 +120,40 @@ const replyMarkupSchema = z
   .optional()
   .describe('Additional interface options that are available for the bot.')
 
-const sendMessageSchema = z.object({
-  function_name: z.literal('sendMessage'),
-  text: z.string().max(4096).describe('Text of the message to be sent'),
-  parse_mode: z
-    .enum(['Markdown', 'MarkdownV2', 'HTML'])
-    .optional()
-    .describe(
-      "Send Markdown, MarkdownV2, or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message."
-    ),
-  reply_markup: replyMarkupSchema,
-})
+const sendMessageSchema = z
+  .object({
+    function_name: z.literal('sendMessage'),
+    text: z.string().max(4096).describe('Text of the message to be sent'),
+    parse_mode: z
+      .enum(['Markdown', 'MarkdownV2', 'HTML'])
+      .optional()
+      .describe(
+        "Send Markdown, MarkdownV2, or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message."
+      ),
+    reply_markup: replyMarkupSchema,
+  })
+  .strict()
 
-export const sendPhotoSchema = z.object({
-  function_name: z.literal('sendPhoto'),
-  photo: z.union([
-    z.string().describe('Photo to send (file id, url, file path)'),
-    z.object({ url: z.string(), filename: z.string() }),
-  ]),
-  caption: z.string().max(1024).optional().describe('Photo caption (0-1024 characters)'),
-  reply_markup: replyMarkupSchema,
-})
+const sendPhotoSchema = z
+  .object({
+    function_name: z.literal('sendPhoto'),
+    photo: z.union([
+      z.string().describe('Photo to send (file id, url, file path)'),
+      z.object({ url: z.string(), filename: z.string() }),
+    ]),
+    caption: z.string().max(1024).optional().describe('Photo caption (0-1024 characters)'),
+    reply_markup: replyMarkupSchema,
+  })
+  .strict()
 
-const sendAudioSchema = z.object({
-  function_name: z.literal('sendAudio'),
-  audio: z.string().describe('Audio to send (file id, url, file path)'),
-  caption: z.string().max(1024).optional().describe('Audio caption (0-1024 characters)'),
-  reply_markup: replyMarkupSchema,
-})
+const sendAudioSchema = z
+  .object({
+    function_name: z.literal('sendAudio'),
+    audio: z.string().describe('Audio to send (file id, url, file path)'),
+    caption: z.string().max(1024).optional().describe('Audio caption (0-1024 characters)'),
+    reply_markup: replyMarkupSchema,
+  })
+  .strict()
 
 const sendDocumentSchema = z.object({
   function_name: z.literal('sendDocument'),
@@ -260,21 +266,26 @@ const sendDiceSchema = z.object({
   reply_markup: replyMarkupSchema,
 })
 
-const sendChatActionSchema = z.object({
-  function_name: z.literal('sendChatAction'),
-  action: z.enum([
-    'typing',
-    'upload_photo',
-    'record_video',
-    'upload_video',
-    'record_audio',
-    'upload_audio',
-    'upload_document',
-    'find_location',
-    'record_video_note',
-    'upload_video_note',
-  ]),
-})
+const sendChatActionSchema = z
+  .object({
+    function_name: z.literal('sendChatAction'),
+    action: z.enum([
+      'typing',
+      'upload_photo',
+      'record_video',
+      'upload_video',
+      'record_audio',
+      'upload_audio',
+      'upload_document',
+      'find_location',
+      'record_video_note',
+      'upload_video_note',
+    ]),
+    message_thread_id: z.number().optional(),
+  })
+  .describe(
+    'The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status).'
+  )
 
 const sendStickerSchema = z.object({
   function_name: z.literal('sendSticker'),
