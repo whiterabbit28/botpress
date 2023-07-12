@@ -137,7 +137,7 @@ const sendMessageSchema = z
       .describe(
         "Send Markdown, MarkdownV2, or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message."
       ),
-    reply_markup: replyMarkupSchema,
+    reply_markup: replyKeyboardMarkupSchema,
   })
   .strict()
 
