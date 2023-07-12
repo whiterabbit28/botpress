@@ -35,8 +35,8 @@ export function schemaDefinitionToJsonSchema(
   const schema = zodToJsonSchema(definition.schema, {
     $refStrategy: 'none',
     errorMessages: true,
-    // unionStrategy: 'oneOf',
-    // discriminator: true,
+    unionStrategy: 'oneOf',
+    discriminator: true,
   })
   if (!isObjectSchema(schema) || !definition.ui) {
     return schema

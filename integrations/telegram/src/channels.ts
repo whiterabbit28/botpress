@@ -80,12 +80,12 @@ const defaultMessages: IntegrationProps['channels']['channel']['messages'] = {
     console.info(payload)
 
     for (const item of payload.payloads) {
-      let message
       console.info(item)
       const extra = item as any
-      const fnName = `send${item.type.charAt(0).toUpperCase() + item.type.slice(1)}` as any
 
-      message = await client.telegram.callApi(fnName, { chat_id: getChat(conversation), ...extra })
+      const message = await client.telegram.callApi(item.function_name, { chat_id: getChat(conversation), ...extra })
+      console.log('message', message)
+      await ackMessage(message, ack)
 
       // switch (item.type) {
       //   case 'message':
@@ -101,10 +101,6 @@ const defaultMessages: IntegrationProps['channels']['channel']['messages'] = {
       //   default:
       //     break
       // }
-
-      if (message) {
-        await ackMessage(message, ack)
-      }
 
       console.log(payload)
     }
