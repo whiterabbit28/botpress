@@ -123,13 +123,12 @@ const inlineKeyboardMarkupSchema = z.object({
 })
 
 const replyMarkupSchema = z
-  .union([replyKeyboardMarkupSchema, inlineKeyboardMarkupSchema, forceReplySchema])
-  .optional()
-  .describe('Additional interface options that are available for the bot.')
+  .union([replyKeyboardMarkupSchema, inlineKeyboardMarkupSchema, forceReplySchema, z.object({})])
+  .describe('Display buttons for user input. Do not define this property if you do not want to display buttons.')
 
 const sendMessageSchema = z
   .object({
-    send_type: z.literal('message'),
+    send_type: z.literal('message').describe('Must be "message". Not text. Use "message" here.'),
     text: z.string().max(4096).describe('Text of the message to be sent'),
     parse_mode: z
       .enum(['Markdown', 'MarkdownV2', 'HTML'])
@@ -137,7 +136,7 @@ const sendMessageSchema = z
       .describe(
         "Send Markdown, MarkdownV2, or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message."
       ),
-    reply_markup: replyMarkupSchema,
+    reply_markup: replyMarkupSchema.optional(),
   })
   .strict()
 
@@ -149,7 +148,7 @@ const sendPhotoSchema = z
       z.object({ url: z.string(), filename: z.string() }),
     ]),
     caption: z.string().max(1024).optional().describe('Photo caption (0-1024 characters)'),
-    reply_markup: replyMarkupSchema,
+    reply_markup: replyMarkupSchema.optional(),
   })
   .describe(
     'Use this method to send a photo or an image to a user. Prefer this one if an URl is provided to an image file'
@@ -161,7 +160,7 @@ const sendAudioSchema = z
     send_type: z.literal('audio'),
     audio: z.string().describe('Audio to send (file id, url, file path)'),
     caption: z.string().max(1024).optional().describe('Audio caption (0-1024 characters)'),
-    reply_markup: replyMarkupSchema,
+    reply_markup: replyMarkupSchema.optional(),
   })
   .strict()
 
@@ -169,21 +168,21 @@ const sendDocumentSchema = z.object({
   send_type: z.literal('document'),
   document: z.string().describe('Document to send (file id, url, file path)'),
   caption: z.string().max(1024).optional().describe('Document caption (0-1024 characters)'),
-  reply_markup: replyMarkupSchema,
+  reply_markup: replyMarkupSchema.optional(),
 })
 
 const sendVideoSchema = z.object({
   send_type: z.literal('video'),
   video: z.string().describe('Video to send (file id, url, file path)'),
   caption: z.string().max(1024).optional().describe('Video caption (0-1024 characters)'),
-  reply_markup: replyMarkupSchema,
+  reply_markup: replyMarkupSchema.optional(),
 })
 
 const sendLocationSchema = z.object({
   send_type: z.literal('location'),
   latitude: z.number().min(-90).max(90).describe('Latitude of the location'),
   longitude: z.number().min(-180).max(180).describe('Longitude of the location'),
-  reply_markup: replyMarkupSchema,
+  reply_markup: replyMarkupSchema.optional(),
 })
 
 const sendVenueSchema = sendLocationSchema
@@ -201,7 +200,7 @@ const sendContactSchema = z.object({
   phone_number: z.string(),
   first_name: z.string(),
   last_name: z.string(),
-  reply_markup: replyMarkupSchema,
+  reply_markup: replyMarkupSchema.optional(),
 })
 
 const sendAnimationSchema = z.object({
@@ -212,7 +211,7 @@ const sendAnimationSchema = z.object({
   height: z.number().optional().describe('Animation height'),
   thumb: z.string().optional().describe('Thumbnail of the animation'),
   caption: z.string().max(1024).optional().describe('Animation caption (0-1024 characters)'),
-  reply_markup: replyMarkupSchema,
+  reply_markup: replyMarkupSchema.optional(),
 })
 
 const sendVoiceSchema = z.object({
@@ -220,7 +219,7 @@ const sendVoiceSchema = z.object({
   voice: z.string().describe('Voice to send (file id, url, file path)'),
   caption: z.string().max(1024).optional().describe('Voice message caption (0-1024 characters)'),
   duration: z.number().optional().describe('Duration of the voice message in seconds'),
-  reply_markup: replyMarkupSchema,
+  reply_markup: replyMarkupSchema.optional(),
 })
 
 export const payloadSchema = z
