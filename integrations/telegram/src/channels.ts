@@ -1,7 +1,7 @@
 import { Conversation } from '@botpress/client'
 import { AckFunction } from '@botpress/sdk'
 import { Context, Markup, Telegraf } from 'telegraf'
-import type { Update } from 'telegraf/typings/core/types/typegram'
+import type { Message, Update } from 'telegraf/typings/core/types/typegram'
 import type { Card } from '../.botpress/implementation/channels/channel/card'
 import { IntegrationProps } from '.botpress'
 
@@ -77,34 +77,10 @@ const defaultMessages: IntegrationProps['channels']['channel']['messages'] = {
   raw: async ({ ctx, conversation, ack, payload }) => {
     const client = new Telegraf(ctx.configuration.botToken)
 
-    console.info('raw received', JSON.stringify(payload, undefined, 2))
-
     for (const item of payload.payloads) {
-      const extra = item as any
-
-      const fnName = `send${item.send_type.charAt(0).toUpperCase() + item.send_type.slice(1)}`
-
-      console.log('fnName', fnName)
-      const message = await client.telegram.callApi(fnName, { chat_id: getChat(conversation), ...extra })
-      console.log('message', message)
+      const fnName = `send${item.send_type.charAt(0).toUpperCase() + item.send_type.slice(1)}` as any
+      const message = (await client.telegram.callApi(fnName, { chat_id: getChat(conversation), ...item })) as Message
       await ackMessage(message, ack)
-
-      // switch (item.type) {
-      //   case 'message':
-      //     message = await client.telegram.sendMessage(getChat(conversation), item.text, extra)
-      //     client.telegram.callApi(fnName, )
-      //     break
-      //   case 'photo':
-      //     message = await client.telegram.sendPhoto(getChat(conversation), item.photo, extra)
-      //     break
-      //   case 'document':
-      //     message = await client.telegram.sendDocument(getChat(conversation), item.document, extra)
-      //     break
-      //   default:
-      //     break
-      // }
-
-      console.log(payload)
     }
   },
 }
