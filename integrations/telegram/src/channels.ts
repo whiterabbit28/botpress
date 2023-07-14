@@ -2,6 +2,7 @@ import { Conversation } from '@botpress/client'
 import { AckFunction } from '@botpress/sdk'
 import { Context, Markup, Telegraf } from 'telegraf'
 import type { Message, Update } from 'telegraf/typings/core/types/typegram'
+import { FmtString } from 'telegraf/typings/format'
 import type { Card } from '../.botpress/implementation/channels/channel/card'
 import { IntegrationProps } from '.botpress'
 
@@ -56,7 +57,7 @@ const defaultMessages: IntegrationProps['channels']['channel']['messages'] = {
   dropdown: async ({ ctx, conversation, ack, payload }) => {
     const client = new Telegraf(ctx.configuration.botToken)
     const buttons = payload.options.map((choice) => Markup.button.callback(choice.label, choice.value))
-    console.log(Markup.keyboard(buttons).oneTime())
+
     const message = await client.telegram.sendMessage(
       getChat(conversation),
       payload.text,
@@ -79,7 +80,16 @@ const defaultMessages: IntegrationProps['channels']['channel']['messages'] = {
 
     for (const item of payload.payloads) {
       const fnName = `send${item.send_type.charAt(0).toUpperCase() + item.send_type.slice(1)}` as any
-      const message = (await client.telegram.callApi(fnName, { chat_id: getChat(conversation), ...item })) as Message
+
+      // necessary to remove reserved keywords
+      const text = 'text' in item ? FmtString.normalise(item.text) : {}
+
+      const message = (await client.telegram.callApi(fnName, {
+        chat_id: getChat(conversation),
+        ...item,
+        ...text,
+      })) as Message
+
       await ackMessage(message, ack)
     }
   },
