@@ -1,8 +1,8 @@
 import { Conversation } from '@botpress/client'
 import { AckFunction } from '@botpress/sdk'
 import { Context, Markup, Telegraf } from 'telegraf'
+import { FmtString } from 'telegraf/format'
 import type { Message, Update } from 'telegraf/typings/core/types/typegram'
-import { FmtString } from 'telegraf/typings/format'
 import type { Card } from '../.botpress/implementation/channels/channel/card'
 import { IntegrationProps } from '.botpress'
 
