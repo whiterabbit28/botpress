@@ -1,17 +1,5 @@
 import { z } from 'zod'
 
-const keyboardButtonPollTypeSchema = z
-  .object({
-    type: z
-      .enum(['QUIZ', 'REGULAR'])
-      .optional()
-      .describe('If QUIZ is passed, the user will be allowed to create only Quiz Mode polls'),
-  })
-  .optional()
-  .describe(
-    'This object represents type of a poll, which is allowed to be created while the user is pressing the button.'
-  )
-
 const keyboardButtonSchema = z.object({
   text: z
     .string()
@@ -26,11 +14,6 @@ const keyboardButtonSchema = z.object({
   hide: z.boolean().optional().describe('Optional. Specify True, to hide the button'),
   request_contact: z.boolean().optional().describe("If True, the user's phone number will be requested"),
   request_location: z.boolean().optional().describe("If True, the user's current location will be requested"),
-  request_poll: keyboardButtonPollTypeSchema
-    .optional()
-    .describe(
-      'If specified, the user will be asked to create a poll and send it to the bot when the button is pressed.'
-    ),
 })
 
 const loginUrlSchema = z
