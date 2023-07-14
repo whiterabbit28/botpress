@@ -123,22 +123,21 @@ const inlineKeyboardMarkupSchema = z.object({
 })
 
 const replyMarkupSchema = z
-  .union([replyKeyboardMarkupSchema, inlineKeyboardMarkupSchema, forceReplySchema, z.object({})])
-  .describe('Display buttons for user input. Do not define this property if you do not want to display buttons.')
+  .union([replyKeyboardMarkupSchema, inlineKeyboardMarkupSchema, forceReplySchema])
+  .optional()
+  .describe('Do NOT set "reply_markup" if it result in an empty object')
 
-const sendMessageSchema = z
-  .object({
-    send_type: z.literal('message').describe('Must be "message". Not text. Use "message" here.'),
-    text: z.string().max(4096).describe('Text of the message to be sent'),
-    parse_mode: z
-      .enum(['Markdown', 'MarkdownV2', 'HTML'])
-      .optional()
-      .describe(
-        "Send Markdown, MarkdownV2, or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message."
-      ),
-    reply_markup: replyMarkupSchema.optional(),
-  })
-  .strict()
+const sendMessageSchema = z.object({
+  send_type: z.literal('message').describe('Must be "message". Not text. Use "message" here.'),
+  text: z.string().max(4096).describe('Text of the message to be sent'),
+  parse_mode: z
+    .enum(['Markdown', 'MarkdownV2', 'HTML'])
+    .optional()
+    .describe(
+      "Send Markdown, MarkdownV2, or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message."
+    ),
+  reply_markup: replyMarkupSchema.optional(),
+})
 
 const sendPhotoSchema = z
   .object({
