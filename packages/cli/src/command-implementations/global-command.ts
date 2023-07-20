@@ -92,7 +92,9 @@ export abstract class GlobalCommand<C extends GlobalCommandDefinition> extends B
       throw new errors.NotLoggedInError()
     }
 
-    return this.api.newClient({ apiUrl, token, workspaceId }, this.logger)
+    const client = this.api.newClient({ apiUrl, token, workspaceId }, this.logger)
+    delete (client as any).then
+    return client
   }
 
   private _notifyUpdate = async (pkgJson: PackageJson): Promise<void> => {
