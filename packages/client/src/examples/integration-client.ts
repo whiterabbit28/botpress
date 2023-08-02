@@ -1,10 +1,9 @@
 import { Client } from '../index'
-import { EnumerateActions } from '../types/functions'
 
 type GithubFetchIssueInputSchema = { issueId: string }
 type GithubFetchIssueOutputSchema = { title: string; description: string }
 export type IntegrationClient = {
-  type: 'integration'
+  integrations: null
   name: 'github'
   version: '1.0.0'
   configuration: { schema: any }
@@ -18,8 +17,6 @@ export type IntegrationClient = {
     }
   }
 }
-
-type _AvailableActions = EnumerateActions<IntegrationClient>
 
 const integrationClient = new Client<IntegrationClient>()
 

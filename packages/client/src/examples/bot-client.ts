@@ -1,5 +1,4 @@
 import { Client } from '../index'
-import { EnumerateActions } from '../types/functions'
 
 type GithubFetchIssueInputSchema = { issueId: string }
 type GithubFetchIssueOutputSchema = { title: string; description: string }
@@ -8,7 +7,6 @@ type LinearCreateIssueOutputSchema = { issueId: string }
 type LinearMoveIssueInputSchema = { issueId: string; column: string }
 type LinearMoveIssueOutputSchema = {}
 export type BotClient = {
-  type: 'bot'
   integrations: {
     github: {
       name: 'github'
@@ -44,10 +42,10 @@ export type BotClient = {
     }
   }
   events: {}
+  channels: null
+  actions: null
   states: {}
 }
-
-type _AvailableActions = EnumerateActions<BotClient>
 
 const botClient = new Client<BotClient>()
 

@@ -1,7 +1,4 @@
 import { Client } from '../index'
-import { EnumerateActions } from '../types/functions'
-
-type _AvailableActions = EnumerateActions<{ type: undefined }>
 
 const adminClient = new Client()
 

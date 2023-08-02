@@ -33,12 +33,7 @@ export type ChannelDefinition = {
   }
 }
 
-export type IntegrationStateDefinition = {
-  type: 'integration' | 'conversation' | 'user'
-  schema: Schema
-}
-
-export type BotStateDefinition = {
+export type StateDefinition = {
   type: 'bot' | 'conversation' | 'user'
   schema: Schema
 }
@@ -47,16 +42,21 @@ export type IntegrationDefinition = {
   events: Record<string, EventDefinition>
   actions: Record<string, ActionDefinition>
   channels: Record<string, ChannelDefinition>
-  states: Record<string, IntegrationStateDefinition>
+  states: Record<string, StateDefinition>
 }
 
-export type BotDefinition = {
-  integrations: Record<string, IntegrationDefinition>
-  events: Record<string, EventDefinition>
-  states: Record<string, BotStateDefinition>
+export type ClientDefinition = {
+  integrations: Record<string, IntegrationDefinition> | null
+  events: Record<string, EventDefinition> | null
+  actions: Record<string, ActionDefinition> | null
+  channels: Record<string, ChannelDefinition> | null
+  states: Record<string, StateDefinition> | null
 }
 
-export type ClientDefinition =
-  | ({ type: 'bot' } & BotDefinition)
-  | ({ type: 'integration' } & IntegrationDefinition)
-  | { type: undefined }
+export type DefaultClientDefinition = {
+  integrations: null
+  events: null
+  actions: null
+  channels: null
+  states: null
+}
