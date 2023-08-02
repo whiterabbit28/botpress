@@ -1,5 +1,5 @@
 import { Client } from '../index'
-import { EnumerateActions } from '../types'
+import { EnumerateActions } from '../types/functions'
 
 type GithubFetchIssueInputSchema = { issueId: string }
 type GithubFetchIssueOutputSchema = { title: string; description: string }

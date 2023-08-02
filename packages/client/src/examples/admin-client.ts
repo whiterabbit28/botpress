@@ -1,5 +1,5 @@
 import { Client } from '../index'
-import { EnumerateActions } from '../types'
+import { EnumerateActions } from '../types/functions'
 
 type _AvailableActions = EnumerateActions<{ type: undefined }>
 
