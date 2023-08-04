@@ -1,5 +1,4 @@
-import type { Client } from '@botpress/client'
-import { Bot } from '@botpress/sdk'
+import { Bot, BotSpecificClient, type BotProps } from '@botpress/sdk'
 import type { z } from 'zod'
 import { Github, Linear } from '.botpress'
 
@@ -15,36 +14,22 @@ const GITHUB_ISSUE_OPENED_TYPE = 'github:issueOpened' satisfies GITHUB_EVENT_TYP
 const LINEAR_ISSUE_CHANNEL = 'issue' satisfies LINEAR_CHANNELS
 const LINEAR_CONVERSATION_TAG_ID = 'linear:id' satisfies LINEAR_CONVERSATION_TAG
 
-const bot = new Bot({
-  integrations: [github, linear],
+const botProps = {
+  integrations: [github, linear] satisfies [Github, Linear], // TODO: find workaround for this weird satisfies statement
   states: {},
   events: {},
-})
+} satisfies BotProps
+const bot = new Bot(botProps)
 
-const createLinearIssue = async (
-  client: Client,
-  issue: z.infer<typeof linear.definition.actions.createIssue.input>
-): Promise<z.infer<typeof linear.definition.actions.createIssue.output>> => {
-  const { output } = await client.callAction({
-    type: 'linear:createIssue',
-    input: issue,
-  })
+bot.event(async ({ event, client: _client, ctx }) => {
+  const client = _client as BotSpecificClient<typeof botProps>
 
-  const parseResult = linear.definition.actions.createIssue.output.safeParse(output)
-  if (!parseResult.success) {
-    throw new Error(`Invalid output: ${parseResult.error}`)
-  }
-
-  return parseResult.data
-}
-
-bot.event(async ({ event, client, ctx }) => {
   const { type, payload } = event
   if (type !== GITHUB_ISSUE_OPENED_TYPE) {
     return
   }
 
-  const parseResult = github.definition.events.issueOpened.safeParse(payload)
+  const parseResult = github.definition.events.issueOpened.schema.safeParse(payload)
   if (!parseResult.success) {
     throw new Error(`Invalid payload: ${parseResult.error}`)
   }
@@ -53,10 +38,15 @@ bot.event(async ({ event, client, ctx }) => {
 
   console.info('Received GitHub issue', githubIssue)
 
-  const { issue } = await createLinearIssue(client, {
-    title: githubIssue.title,
-    description: githubIssue.content ?? 'No content...',
-    teamName: 'Cloud Services',
+  const {
+    output: { issue },
+  } = await client.callAction({
+    type: 'linear:createIssue',
+    input: {
+      title: githubIssue.title,
+      description: githubIssue.content ?? 'No content...',
+      teamName: 'Cloud Services',
+    },
   })
 
   const { conversation } = await client.getOrCreateConversation({
@@ -76,7 +66,7 @@ bot.event(async ({ event, client, ctx }) => {
     tags: {},
     payload: {
       text: `Automatically created from GitHub issue: ${issueUrl}`,
-    } satisfies z.infer<typeof linear.definition.channels.issue.messages.text>,
+    } satisfies z.infer<typeof linear.definition.channels.issue.messages.text.schema>,
   })
 })
 

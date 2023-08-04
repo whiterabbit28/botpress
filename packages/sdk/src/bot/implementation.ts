@@ -4,6 +4,7 @@ import { mapValues } from 'radash'
 import { SchemaDefinition, schemaDefinitionToJsonSchema } from '../schema'
 import { serve } from '../serve'
 import { Merge } from '../type-utils'
+import { InstalledIntegration, IntegrationInstance } from './integration-instance'
 import { createBotHandler } from './server'
 import type { BotState, EventHandler, MessageHandler, StateExpiredHandler } from './state'
 
@@ -28,12 +29,6 @@ export type StateDefinition = {
   type: 'conversation' | 'user' | 'bot'
   schema: Record<string, any>
   expiry?: number
-}
-
-export type IntegrationInstance = {
-  id: string
-  enabled?: boolean
-  configuration?: Record<string, any>
 }
 
 export type RecurringEventDefinition = {
@@ -74,7 +69,7 @@ export type BotDefinition = {
 }
 
 export type BotProps = {
-  integrations?: IntegrationInstance[]
+  integrations?: InstalledIntegration[]
   user?: UserDefinition
   conversation?: ConversationDefinition
   message?: MessageDefinition

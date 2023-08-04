@@ -1,4 +1,5 @@
-import type { Message, Conversation, User, Event, Client, State } from '@botpress/client'
+import type { Message, Conversation, User, Event, State } from '@botpress/client'
+import { BotSpecificClient as Client } from './client'
 import type { BotContext } from './context'
 
 export type MessageHandler = (props: {

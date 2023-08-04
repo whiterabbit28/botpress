@@ -2,8 +2,9 @@ import bluebird from 'bluebird'
 import { casing } from '../../utils'
 import { GENERATED_HEADER, INDEX_FILE } from '../const'
 import { jsonSchemaToTypeScriptZod } from '../generators'
-import { Module, ModuleDef, ReExportSchemaModule } from '../module'
+import { Module, ModuleDef, ReExportConstantModule } from '../module'
 import type * as types from '../typings'
+import { ReExportSchemaModule } from './schema-module'
 
 export class MessageModule extends Module {
   public static async create(name: string, message: types.MessageDefinition): Promise<MessageModule> {
@@ -65,14 +66,22 @@ export class ChannelModule extends Module {
       '',
       `export const ${def.exportName} = {`,
       `  messages: ${messages.exports},`,
-      `  message: ${JSON.stringify(message)} as const,`,
-      `  conversation: ${JSON.stringify(conversation)} as const,`,
+      `  message: ${this._const(message)},`,
+      `  conversation: ${this._const(conversation)},`,
       '}',
     ].join('\n')
   }
+
+  private _const(x: object | undefined): string {
+    return x === undefined ? 'undefined' : `${this._stringify(x)}`
+  }
+
+  private _stringify(x: object): string {
+    return JSON.stringify(x, null, 1).replace(/\n */g, ' ')
+  }
 }
 
-export class ChannelsModule extends ReExportSchemaModule {
+export class ChannelsModule extends ReExportConstantModule {
   public static async create(channels: Record<string, types.ChannelDefinition>): Promise<ChannelsModule> {
     const channelModules = await bluebird.map(Object.entries(channels), async ([channelName, channel]) => {
       const mod = await ChannelModule.create(channelName, channel)
