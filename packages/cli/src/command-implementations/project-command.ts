@@ -46,26 +46,26 @@ export abstract class ProjectCommand<C extends ProjectCommandDefinition> extends
 
   protected parseBot(bot: bpsdk.Bot) {
     return {
-      ...bot.props,
-      integrations: _(bot.props.integrations)
+      ...bot.definition,
+      integrations: _(bot.definition.integrations)
         .values()
         .keyBy((i) => i.id)
         .mapValues(({ enabled, configuration }) => ({ enabled, configuration }))
         .value(),
-      configuration: bot.props.configuration
+      configuration: bot.definition.configuration
         ? {
-            ...bot.props.configuration,
-            schema: utils.schema.mapZodToJsonSchema(bot.props.configuration),
+            ...bot.definition.configuration,
+            schema: utils.schema.mapZodToJsonSchema(bot.definition.configuration),
           }
         : undefined,
-      events: bot.props.events
-        ? _.mapValues(bot.props.events, (event) => ({
+      events: bot.definition.events
+        ? _.mapValues(bot.definition.events, (event) => ({
             ...event,
             schema: utils.schema.mapZodToJsonSchema(event),
           }))
         : undefined,
-      states: bot.props.states
-        ? _.mapValues(bot.props.states, (state) => ({
+      states: bot.definition.states
+        ? _.mapValues(bot.definition.states, (state) => ({
             ...state,
             schema: utils.schema.mapZodToJsonSchema(state),
           }))

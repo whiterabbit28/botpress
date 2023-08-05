@@ -11,4 +11,4 @@ export {
   AckFunction,
 } from './integration'
 
-export { Bot, BotProps, IntegrationInstance, BotContext } from './bot'
+export { Bot, BotDefinition, IntegrationInstance, BotContext } from './bot'

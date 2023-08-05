@@ -47,7 +47,7 @@ type MessageDefinition = {
   tags?: Record<string, TagDefinition>
 }
 
-export type BotProps<T extends TBot = TBot> = {
+export type BotDefinition<T extends TBot = TBot> = {
   integrations?: {
     [K in T['integrations']]: IntegrationInstance<K>
   }
@@ -73,10 +73,10 @@ export class Bot<T extends TBot = TBot> {
     stateExpiredHandlers: [],
   }
 
-  public readonly props: BotProps<T>
+  public readonly definition: BotDefinition<T>
 
-  public constructor(props: BotProps<T>) {
-    this.props = props
+  public constructor(definition: BotDefinition<T>) {
+    this.definition = definition
   }
 
   public message = (handler: MessageHandler): void => {
