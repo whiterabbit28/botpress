@@ -13,7 +13,6 @@ export const createTicket: Implementation['actions']['createTicket'] = async ({ 
     channel: 'ticket',
     tags: {
       id: ticket.id.toString(),
-      originConversationId: input.__conversationId,
     },
   })
 
@@ -21,20 +20,18 @@ export const createTicket: Implementation['actions']['createTicket'] = async ({ 
     external_id: conversation.id,
   })
 
-  const { user } = await client.getOrCreateUser({
-    tags: {
-      id: ticket.requester_id.toString(),
-      origin: 'botpress',
+  const patientId = ticket.requester_id.toString()
+  await client.setState({
+    name: 'patient',
+    type: 'conversation',
+    id: conversation.id,
+    payload: {
+      patientId,
     },
-  })
-
-  await zendeskClient.updateUser(ticket.requester_id, {
-    external_id: user.id,
   })
 
   return {
     ticket: transformTicket(ticket),
     conversationId: conversation.id,
-    userId: user.id,
   }
 }

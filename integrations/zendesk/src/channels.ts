@@ -6,18 +6,17 @@ export default {
   ticket: {
     messages: {
       text: async ({ ...props }) => {
-        const { user } = await props.client.getUser({ id: props.payload.userId })
-        if (user.tags?.origin === 'zendesk') {
-          return
-        }
-
-        // Keep the integration name in those tags
         const ticketId = props.conversation!.tags[`${INTEGRATION_NAME}:id`]!
-        const zendeskUserId = user.tags[`${INTEGRATION_NAME}:id`]!
+
+        const { state } = await props.client.getState({
+          name: 'patient',
+          id: props.conversation.id,
+          type: 'conversation',
+        })
 
         return await getZendeskClient(props.ctx.configuration).createComment(
           ticketId,
-          zendeskUserId,
+          state.payload.patientId,
           props.payload.text
         )
       },

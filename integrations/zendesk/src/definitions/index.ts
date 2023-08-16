@@ -27,6 +27,12 @@ export const states: IntegrationDefinitionProps['states'] = {
       triggerIds: z.array(z.string()),
     }),
   },
+  patient: {
+    type: 'conversation',
+    schema: z.object({
+      patientId: z.string(),
+    }),
+  },
 }
 
 export const user = {

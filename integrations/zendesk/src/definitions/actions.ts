@@ -10,7 +10,6 @@ const createTicket = {
       comment: z.string().describe('Comment for the ticket'),
       requesterName: z.string().describe('Requester name'),
       requesterEmail: z.string().describe('Requester email'),
-      __conversationId: z.string().describe('Internal: Conversation ID to bind the ticket to'),
     }),
     ui: {
       subject: {
@@ -31,7 +30,6 @@ const createTicket = {
     schema: z.object({
       ticket: ticketSchema,
       conversationId: z.string(),
-      userId: z.string(),
     }),
   },
 }
