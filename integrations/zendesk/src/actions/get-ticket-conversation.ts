@@ -16,22 +16,28 @@ export const getTicketConversation: IntegrationProps['actions']['getTicketConver
   input,
   client,
   ctx,
+  logger,
 }) => {
-  const zendeskClient = getZendeskClient(ctx.configuration)
-  const exists = await ticketExists(zendeskClient, input.ticketId)
-  if (!exists) {
-    throw new Error(`Ticket ${input.ticketId} does not exist`)
-  }
+  try {
+    const zendeskClient = getZendeskClient(ctx.configuration)
+    const exists = await ticketExists(zendeskClient, input.ticketId)
+    if (!exists) {
+      throw new Error(`Ticket ${input.ticketId} does not exist`)
+    }
 
-  const { conversation } = await client.getOrCreateConversation({
-    channel: 'ticket',
-    tags: {
-      'zendesk:id': input.ticketId,
-    },
-  })
+    const { conversation } = await client.getOrCreateConversation({
+      channel: 'ticket',
+      tags: {
+        'zendesk:id': input.ticketId,
+      },
+    })
 
-  return {
-    conversationId: conversation.id,
-    tags: conversation.tags,
+    return {
+      conversationId: conversation.id,
+      tags: conversation.tags,
+    }
+  } catch (err) {
+    logger.forBot().error('Error while getting the ticket conversation', err)
+    throw err
   }
 }
