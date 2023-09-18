@@ -18,10 +18,10 @@ export const setConversationRequester: IntegrationProps['actions']['setConversat
   ctx,
 }) => {
   const zendeskClient = getZendeskClient(ctx.configuration)
-  const exists = await requesterExists(zendeskClient, input.requesterId)
-  if (!exists) {
-    throw new Error(`Requester ${input.requesterId} does not exist`)
-  }
+  // const exists = await requesterExists(zendeskClient, input.requesterId)
+  // if (!exists) {
+  //   throw new Error(`Requester ${input.requesterId} does not exist`)
+  // }
 
   await client.updateConversation({
     id: input.conversationId,
